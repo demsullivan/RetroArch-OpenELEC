@@ -25,7 +25,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets Mesa"
+PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
 PKG_SHORTDESC="Reference frontend for the libretro API."
@@ -70,7 +70,8 @@ addon() {
     # TODO: libCg
 
   # Shaders
-  # TODO: shaders
+  mkdir -p $PKG_DIR/source/shaders
+    cp -R $INSTALL/usr/share/retroarch/shaders/* $PKG_DIR/source/shaders
 
   # Assets
   mkdir -p $PKG_DIR/source/assets
