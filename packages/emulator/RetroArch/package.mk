@@ -25,7 +25,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain alsa-lib freetype retroarch-assets Mesa"
+PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
 PKG_SHORTDESC="Reference frontend for the libretro API."
@@ -40,22 +40,42 @@ PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
 PKG_DEPENDS_TARGET="$CFG_CORES $PKG_DEPENDS_TARGET"
-TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr $CFG_LAKKA_FLAG --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-cg --enable-zlib "
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-cg --enable-zlib "
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
-if [ "$PROJECT" == "RPi" ]; then
-  export PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bcm2835-driver"
-  export CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
-  export LDFLAGS="$LDFLAGS -lGLESv2"
-fi
+#if [ "$PROJECT" == "RPi" ]; then
+#  export PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bcm2835-driver"
+#  export CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+#  export LDFLAGS="$LDFLAGS -lGLESv2"
+#fi
 
 addon() {
-  cp $INSTALL/usr/bin/retroarch $PKG_DIR/source/bin
-  cp $INSTALL/usr/bin/retroarch-joyconfig $PKG_DIR/source/bin
-  cp $INSTALL/etc/retroarch.cfg $PKG_DIR/source/config
-  cp $INSTALL/usr/lib/libretro/*.so $PKG_DIR/source/cores
+  # Binaries
+  mkdir -p $PKG_DIR/source/bin
+    cp $INSTALL/usr/bin/retroarch $PKG_DIR/source/bin
+    cp $INSTALL/usr/bin/retroarch-joyconfig $PKG_DIR/source/bin
 
-  # TODO: copy libs, shaders, assets to the source dir
+  # Configuration
+  mkdir -p $PKG_DIR/source/config
+    cp $INSTALL/etc/retroarch.cfg $PKG_DIR/source/config
+
+  # Cores
+  mkdir -p $PKG_DIR/source/cores
+    cp $INSTALL/usr/lib/libretro/*.so $PKG_DIR/source/cores
+    cp $INSTALL/usr/lib/libretro/*.info $PKG_DIR/source/cores
+
+  # Libraries
+  mkdir -p $PKG_DIR/source/libs
+    cp $INSTALL/usr/lib/libopenal.so.1 $PKG_DIR/source/libs
+    # TODO: libCg
+
+  # Shaders
+  # TODO: shaders
+
+  # Assets
+  mkdir -p $PKG_DIR/source/assets
+    cp $INSTALL/usr/share/retroarch/* $PKG_DIR/source/assets
+
 }
 
 makeinstall_target() {
@@ -97,10 +117,12 @@ makeinstall_target() {
   sed -i -e "s/# config_save_on_exit = false/config_save_on_exit = true/" $INSTALL/etc/retroarch.cfg
 }
 
-post_install() {  
-  # link default.target to retroarch.target
-  ln -sf retroarch.target $INSTALL/usr/lib/systemd/system/default.target
-  
-  enable_service retroarch-autostart.service
-  enable_service retroarch.service
-}
+# I don't think we'll need this for the add-on
+#post_install() {
+#
+#  # link default.target to retroarch.target
+#  ln -sf retroarch.target $INSTALL/usr/lib/systemd/system/default.target
+#  
+#  enable_service retroarch-autostart.service
+#  enable_service retroarch.service
+#}
