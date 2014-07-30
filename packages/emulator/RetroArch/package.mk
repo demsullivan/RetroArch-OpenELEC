@@ -94,6 +94,7 @@ makeinstall_target() {
   
   # Misc
   sed -i -e "s/# video_gpu_screenshot = true/video_gpu_screenshot = false/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# config_save_on_exit = false/config_save_on_exit = true/" $INSTALL/etc/retroarch.cfg
 }
 
 post_install() {  
