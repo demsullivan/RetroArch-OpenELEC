@@ -25,28 +25,37 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain alsa-lib freetype retroarch-assets"
+PKG_DEPENDS_TARGET="toolchain alsa-lib freetype retroarch-assets Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
 PKG_SHORTDESC="Reference frontend for the libretro API."
 PKG_LONGDESC="RetroArch is the reference frontend for the libretro API. Popular examples of implementations for this API includes videogame system emulators and game engines, but also more generalized 3D programs. These programs are instantiated as dynamic libraries. We refer to these as libretro cores."
 
-PKG_IS_ADDON="no"
+PKG_IS_ADDON="yes"
+PKG_ADDON_REQUIRES="os.openelec.tv:4.0.7 xbmc.python:2.0"
+PKG_MAINTAINER="dave@dave-sullivan.com"
+PKG_ADDON_TYPE="xbmc.python.script"
+PKG_ADDON_ID="emulator.retroarch"
 PKG_AUTORECONF="no"
 
+. $PKG_DIR/config
+PKG_DEPENDS_TARGET="$CFG_CORES $PKG_DEPENDS_TARGET"
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl $CFG_LAKKA_FLAG"
+
+# remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
 if [ "$PROJECT" == "RPi" ]; then
   export PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bcm2835-driver"
   export CFLAGS="$CFLAGS -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
   export LDFLAGS="$LDFLAGS -lGLESv2"
 fi
 
-configure_target() {
-  cd $ROOT/$PKG_BUILD
-  if [ "$PROJECT" == "Cubieboard2" ] || [ "$PROJECT" == "Cubietruck" ] ; then
-    ./configure --disable-vg --disable-ffmpeg --disable-sdl --disable-x11 --disable-xvideo --enable-gles --disable-kms --enable-neon --enable-fbo --enable-mali_fbdev --enable-lakka --enable-freetype
-  else
-    ./configure --disable-vg --disable-ffmpeg --disable-sdl --disable-x11 --disable-xvideo --enable-lakka
-  fi
+addon() {
+  cp $INSTALL/usr/bin/retroarch $PKG_DIR/source/bin
+  cp $INSTALL/usr/bin/retroarch-joyconfig $PKG_DIR/source/bin
+  cp $INSTALL/etc/retroarch.cfg $PKG_DIR/source/config
+  cp $INSTALL/usr/lib/libretro/*.so $PKG_DIR/source/cores
+
+  # TODO: copy libs, shaders, assets to the source dir
 }
 
 makeinstall_target() {

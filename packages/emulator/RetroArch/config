@@ -1,0 +1,2 @@
+CFG_CORES="nestopia s9x s9x-next"
+CFG_LAKKA_FLAG="--enable-lakka"
