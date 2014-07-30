@@ -40,7 +40,7 @@ PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
 PKG_DEPENDS_TARGET="$CFG_CORES $PKG_DEPENDS_TARGET"
-TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl $CFG_LAKKA_FLAG"
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr $CFG_LAKKA_FLAG --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-cg --enable-zlib "
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
 if [ "$PROJECT" == "RPi" ]; then
