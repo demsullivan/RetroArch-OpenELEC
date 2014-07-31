@@ -74,6 +74,7 @@ echo "CFG_CORES=\"$selected_cores\"" > packages/emulator/RetroArch/config
 cp -R tools/mkpkg/* $openelec_src_path/tools/mkpkg
 mkdir -p $openelec_src_path/packages/emulator
 cp -R packages/emulator/* $openelec_src_path/packages/emulator
+mkdir -p $openelec_src_path/packages/emulator/RetroArch/icon
 cp icon/icon.png $openelec_src_path/packages/emulator/RetroArch/icon
 cp changelog.txt $openelec_src_path/packages/emulator/RetroArch
 
