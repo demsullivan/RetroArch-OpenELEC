@@ -38,10 +38,13 @@ echo "Valid cores: $real_cores"
 while [[ $valid_core_selection != "y" ]]; do
     echo -n "Selected cores? "
     read selected_cores
-    if [[ "$selected_cores" == "all" ]]; then
-	valid_core_selection="y"
-	selected_cores="$real_cores"
-    fi
+    for i in $selected_cores; do
+        if [[ $valid_cores != *$i* ]]; then
+            valid_core_selection="n"
+            break
+        fi
+        valid_core_selection="y"
+    done
 done
 
 # project/architecture
@@ -66,7 +69,6 @@ echo "Arch: $arch"
 echo "Project: $project"
 echo "Cores: $selected_cores"
 echo "OE Source: $openelec_src_path"
-exit 0
 
 echo "CFG_CORES=\"$selected_cores\"" > packages/emulator/RetroArch/config
 
@@ -80,11 +82,15 @@ cp changelog.txt $openelec_src_path/packages/emulator/RetroArch
 
 # make packages
 cd $openelec_src_path/tools/mkpkg
-for [ i in "$selected_cores retroarch" ]; do
-    ./mkpkg_$i
-    echo "http://sources.openelec.tv/4.0.7/pkgname" > $openelec_src_path/sources/pkgname/pkgname
+packages="$selected_cores retroarch retroarch-assets common-shaders core-info"
+
+for i in $packages; do
+    echo "Building $i package..."
+    ./mkpkg_$i > /dev/null 2&>1
+    #echo "http://sources.openelec.tv/4.0.7/pkgname" > $openelec_src_path/sources/pkgname/pkgname
 done
 
+cd $openelec_src_path
 # build addon
 PROJECT=$project ARCH=$arch ./scripts/create_addon RetroArch
 
