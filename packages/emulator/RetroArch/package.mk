@@ -25,7 +25,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders Mesa"
+PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders core-info Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
 PKG_SHORTDESC="Reference frontend for the libretro API."
@@ -39,7 +39,7 @@ PKG_ADDON_ID="emulator.retroarch"
 PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
-PKG_DEPENDS_TARGET="$CFG_CORES $PKG_DEPENDS_TARGET"
+PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $CFG_CORES"
 TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-cg --enable-zlib "
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
