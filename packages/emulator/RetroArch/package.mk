@@ -40,7 +40,7 @@ PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
 PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $CFG_CORES"
-TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-cg --enable-zlib "
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-oa --enable-cg --enable-zlib"
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
 #if [ "$PROJECT" == "RPi" ]; then
@@ -87,16 +87,16 @@ makeinstall_target() {
     cp $ROOT/$PKG_BUILD/retroarch.cfg $INSTALL/etc
   
   # General configuration
-  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/usr\/lib\/libretro\"/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory =\/storage\/roms/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# content_directory =/content_directory =\/storage\/roms/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# savefile_directory =/savefile_directory =\/storage\/savefiles/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# savestate_directory =/savestate_directory =\/storage\/savestates/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# system_directory =/system_directory =\/storage\/system/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.retroarch\/lib/"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# content_directory =/content_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# savefile_directory =/savefile_directory =\/storage\/emulators\/retroarch\/savefiles/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# savestate_directory =/savestate_directory =\/storage\/emulators\/retroarch\/savestates/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# system_directory =/system_directory =\/storage\/emulators\/retroarch\/system/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# screenshot_directory =/screenshot_directory =\/storage\/screenshots/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# video_shader_dir =/video_shader_dir =\/storage\/shaders/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# video_shader_dir =/video_shader_dir =\/storage\/.xbmc\/addons\/emulator.retroarch\/shaders/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# rgui_show_start_screen = true/rgui_show_start_screen = false/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# assets_directory =/assets_directory =\/usr\/share\/retroarch/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# assets_directory =/assets_directory =\/storage\/.xbmc\/addons\/emulator.retroarch\/assets/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# menu_driver = \"rgui\"/menu_driver = \"lakka\"/" $INSTALL/etc/retroarch.cfg
   
   # Video
@@ -111,7 +111,7 @@ makeinstall_target() {
   # Input
   sed -i -e "s/# input_driver = sdl/input_driver = udev/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# input_autodetect_enable = true/input_autodetect_enable = true/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# joypad_autoconfig_dir =/joypad_autoconfig_dir = \/etc\/retroarch-joypad-autoconfig/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# joypad_autoconfig_dir =/joypad_autoconfig_dir = \/storage\/.xbmc\/addons\/emulator.retroarch\/bin\/retroarch-joypad-autoconfig/" $INSTALL/etc/retroarch.cfg
   
   # Misc
   sed -i -e "s/# video_gpu_screenshot = true/video_gpu_screenshot = false/" $INSTALL/etc/retroarch.cfg
