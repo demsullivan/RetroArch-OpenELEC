@@ -3,11 +3,11 @@
 
 	<!-- RetroArch -->
 	<string id="1000">General</string>
-	<string id="1001">Interface</string>
-	<string id="1002">XBMC service</string>
-	<string id="1020">Halt</string>
-	<string id="1021">Stop service</string>
+	<string id="1010">Interface</string>
+	<string id="1020">XBMC service</string>
+	<string id="1021">Freeze</string>
+	<string id="1022">Stop</string>
 	<string id="1100">Debug</string>
-	<string id="1101">Enable debugging</string>
+	<string id="1110">Enable debugging</string>
 
 </strings>
