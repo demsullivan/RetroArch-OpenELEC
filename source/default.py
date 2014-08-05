@@ -19,10 +19,10 @@
 ################################################################################
 
 import os
-import sys
 import shutil
+import subprocess
+import xbmc
 import xbmcaddon
-import xbmcgui
 from lib.configobj import ConfigObj
 
 # Assign path variables for add-on files
@@ -38,10 +38,10 @@ user_config = os.path.join(user_dirs, 'config', 'retroarch.cfg')
 user_log = os.path.join(user_dirs, 'log', 'retroarch.log')
 
 # List of default flags which are passed to the RetroArch binary
-list_flags = ['--menu', '--config' + ' ' + user_config, '>' + ' ' user_log]
+args = [__path__, '--menu', '--config', user_config]
 
 # Make all add-on binaries executable
-os.system('chmod a+rx ' + __binpath__)
+subprocess.call(['chmod', 'a+rx', __binpath__])
 
 # Check if directories for user files exists and create if necessary
 if not os.path.isdir(user_dirs):
@@ -56,15 +56,19 @@ if not os.path.isdir(user_dirs):
 if not os.path.isfile(user_config):
 	shutil.copy(__config__, user_config)
 
-# Check if user log file exists and create if necessary
-if not os.path.isfile(user_log):
-	shutil.copy(__config__, user_config)
-
 # Check the current value of MENU_DRIVER in settings.xml and change in 
 # user_config if different from it.
 settings_parser('MENU_DRIVER', 'menu_driver')
 
-# Set verbose logging if selected in settings.xml
+# Check the current value of AUDIO_DRIVER in settings.xml and change in 
+# user_config if different from it.
+settings_parser('AUDIO_DRIVER', 'audio_driver')
+
+# Check the current value of AUDIO_DEVICE in settings.xml and change in 
+# user_config if different from it.
+settings_parser('AUDIO_DEVICE', 'audio_device')
+
+# Add --verbose flag to args if selected in settings.xml
 add_flag('DEBUG', 'true', '--verbose')
 
 # Stop XBMC
@@ -73,8 +77,21 @@ stop_method()
 # Launch RetroArch
 launch_retroarch()
 
+# Writes to user_log if debug is enabled in settings.xml
+if xbmc.getSetting(DEBUG) = 'true':
+    
+    # Open log file
+    log = open(user_log, 'w')
+    
+    # Write verbose output from RetroArch
+    log.write(output)
+    
+    #Close log file
+    log.close()
+
 # Start XBMC
 start_method()
+
 
 def settings_parser(settings_id, user_config_entry):
     
@@ -97,28 +114,22 @@ def add_flag(settings_id, value, flag):
     # Evaluate values
     if xbmc.getSetting(settings_id) = value:
         
-        #Insert flag as second-to-last item in list_flags
-	    list_flags.insert(len(list_flags - 1), flag)
+        #Insert flag as second-to-last item in args
+	    args.append(flag)
 
 def launch_retroarch():
     
-    # Assign seperator variable 
-    sep = ' '
-    
-    # Create a string of flags from list_flags list
-    string_flags = sep.join(list_flags)
-    
     # Launch RetroArch with selected flags
-    os.system(__path__ + ' ' + string_flags)
+    output = check_output(args)
 
 def stop_method():
-    if xbmc.getSetting(XBMC_SERVICE) = 0:
-        os.system('pgrep xbmc.bin | xargs kill -SIGSTOP')
-    if xbmc.getSetting(XBMC_SERVICE) = 1:
-        os.system('systemctl stop xbmc')
+    if xbmc.getSetting(XBMC_SERVICE) = '0':
+        subprocess.call('pgrep xbmc.bin | xargs kill -SIGSTOP', shell=True)
+    if xbmc.getSetting(XBMC_SERVICE) = '1':
+        subprocess.call('systemctl stop xbmc', shell=True)
 
 def start_method():
-    if xbmc.getSetting(XBMC_SERVICE) = 0:
-        os.system('pgrep xbmc.bin | xargs kill -SIGCONT')
-    if xbmc.getSetting(XBMC_SERVICE) = 1:
-        os.system('systemctl start xbmc')
+    if xbmc.getSetting(XBMC_SERVICE) = '0':
+        subprocess.call('pgrep xbmc.bin | xargs kill -SIGCONT', shell=True)
+    if xbmc.getSetting(XBMC_SERVICE) = '1':
+        subprocess.call('systemctl start xbmc', shell=True)
