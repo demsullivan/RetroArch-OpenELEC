@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+
+    <!-- General -->
     <category label="1000">
-        <setting label="1001" type="labelenum" id="MENU_DRIVER" values="lakka|rgui"/>
-        <setting label="1002" type="enum" id="STOP_METHOD" lvalues="1020|1021"/>
+        <setting label="1010" type="labelenum" id="MENU_DRIVER" values="lakka|rgui"/>
+        <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022"/>
     </category>
+    
+    <!-- Debug -->
     <category label="1100">
-        <setting label="1101" type="bool" id="DEBUG" default="false"/>
+        <setting label="1110" type="bool" id="DEBUG" default="false"/>
     </category>
+
 </settings>
