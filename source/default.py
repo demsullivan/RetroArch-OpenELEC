@@ -25,64 +25,100 @@ import xbmcaddon
 import xbmcgui
 from lib.configobj import ConfigObj
 
-# Path variables for add-on files.
-settings	= xbmcaddon.Addon(id='emulator.retroarch')
-cwd		= settings.getAddonInfo('path')
-path		= xbmc.translatePath(os.path.join(cwd, 'bin', 'retroarch'))
-binpath		= xbmc.translatePath(os.path.join(cwd, 'bin', '*'))
-addonconfig	= xbmc.translatePath(os.path.join(cwd, 'config', 'retroarch.cfg'))
+# Assign path variables for add-on files
+__settings__ = xbmcaddon.Addon(id='emulator.retroarch')
+__cwd__ = __settings__.getAddonInfo('path')
+__path__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', 'retroarch'))
+__binpath__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', '*'))
+__config__	= xbmc.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
 
-# Path variables for user files.
-userdir	= '/storage/emulators/retroarch'
-userconfig	= os.path.join(userdir, 'config', 'retroarch.cfg')
-logfile		= os.path.join(userdir, 'log', 'retroarch.log')
+# Assign path variables for user files
+user_dirs = '/storage/emulators/retroarch'
+user_config = os.path.join(user_dirs, 'config', 'retroarch.cfg')
+user_log = os.path.join(user_dirs, 'log', 'retroarch.log')
 
-# Default RetroArch launch path list
-launchlist = [path, '--menu', '--config', userconfig]
+# List of default flags which are passed to the RetroArch binary
+list_flags = ['--menu', '--config' + ' ' + user_config, '>' + ' ' user_log]
 
-# Set user config to ConfigObj.
-config = ConfigObj(userconfig)
+# Make all add-on binaries executable
+os.system('chmod a+rx ' + __binpath__)
 
-# Make all add-on binaries executable.
-os.environ['binpath'] = binpath
-os.system('chmod a+rx' $binpath)
+# Check if directories for user files exists and create if necessary
+if not os.path.isdir(user_dirs):
+	os.makedirs(os.path.join(user_dirs, 'config'))
+	os.makedirs(os.path.join(user_dirs, 'log'))
+	os.makedirs(os.path.join(user_dirs, 'roms'))
+	os.makedirs(os.path.join(user_dirs, 'savefiles'))
+	os.makedirs(os.path.join(user_dirs, 'savestates'))
+	os.makedirs(os.path.join(user_dirs, 'system'))
 
-# Check if directories for user files exists and create if necessary.
-if not os.path.isdir(userdir):
-	os.makedirs(os.path.join(userdir, 'config'))
-	os.makedirs(os.path.join(userdir, 'log'))
-	os.makedirs(os.path.join(userdir, 'roms'))
-	os.makedirs(os.path.join(userdir, 'savefiles'))
-	os.makedirs(os.path.join(userdir, 'savestates'))
-	os.makedirs(os.path.join(userdir, 'system'))
+# Check if user configuration file exists and create if necessary
+if not os.path.isfile(user_config):
+	shutil.copy(__config__, user_config)
 
-# Check if user configuration file exists and create if necessary.	
-if not os.path.isfile(userconfig):
-	shutil.copy(addonconfig, userconfig)
+# Check if user log file exists and create if necessary
+if not os.path.isfile(user_log):
+	shutil.copy(__config__, user_config)
 
-# Check the current menu_driver in settings and change in user config if different.
-settingsparser('menu_driver', 'MENU_DRIVER')
+# Check the current value of MENU_DRIVER in settings.xml and change in 
+# user_config if different from it.
+settings_parser('MENU_DRIVER', 'menu_driver')
 
-if xbmc.getSetting(DEBUG) = True:
-	os.environ['logfile'] = logfile
-	launchlist.append('--verbose > $logfile')
+# Set verbose logging if selected in settings.xml
+add_flag('DEBUG', 'true', '--verbose')
 
-# Halt XBMC
-os.system('pgrep xbmc.bin | xargs kill -SIGSTOP')
+# Stop XBMC
+stop_method()
 
-# Launch add-on.
-sep = ' '
-launchpath = sep.join(launchlist)
-os.environ['launchpath'] = launchpath
-os.system($launchpath)
+# Launch RetroArch
+launch_retroarch()
 
-# Let XBMC continue
-os.system('pgrep xbmc.bin | xargs kill -SIGCONT')
+# Start XBMC
+start_method()
 
-# This function evaluates user config retroarch.cfg with respect to settings.xml. It takes two arguments: the entry in retroarch.cfg to search for and the id of the setting in settings.xml
-def settingsparser(configentry, settingsid)
-	configvalue = config[configentry]
-	settingsvalue = xbmc.getSetting(settingsid)
-	if settingsvalue != configvalue:
-		config[configentry] = settingsvalue
+def settings_parser(settings_id, user_config_entry):
+    
+    # Assign RetroArch user_config to ConfigObj
+    config = ConfigObj(user_config)
+	
+	# Get values from files
+	user_config_value = config[user_config_entry]
+	settings_value = xbmc.getSetting(settings_id)
+	
+	# Evaluate values
+	if settings_value != user_config_value:
+	    
+	    # Write new value
+		config[user_config_entry] = settings_value
 		config.write()
+
+def add_flag(settings_id, value, flag):
+    
+    # Evaluate values
+    if xbmc.getSetting(settings_id) = value:
+        
+        #Insert flag as second-to-last item in list_flags
+	    list_flags.insert(len(list_flags - 1), flag)
+
+def launch_retroarch():
+    
+    # Assign seperator variable 
+    sep = ' '
+    
+    # Create a string of flags from list_flags list
+    string_flags = sep.join(list_flags)
+    
+    # Launch RetroArch with selected flags
+    os.system(__path__ + ' ' + string_flags)
+
+def stop_method():
+    if xbmc.getSetting(XBMC_SERVICE) = 0:
+        os.system('pgrep xbmc.bin | xargs kill -SIGSTOP')
+    if xbmc.getSetting(XBMC_SERVICE) = 1:
+        os.system('systemctl stop xbmc')
+
+def start_method():
+    if xbmc.getSetting(XBMC_SERVICE) = 0:
+        os.system('pgrep xbmc.bin | xargs kill -SIGCONT')
+    if xbmc.getSetting(XBMC_SERVICE) = 1:
+        os.system('systemctl start xbmc')
