@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="RetroArch"
-PKG_VERSION="9dbb404"
+PKG_VERSION="b99de9c"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="GPL"
@@ -40,7 +40,8 @@ PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
 PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $CFG_CORES"
-TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-oa --enable-cg --enable-zlib"
+#TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-oa --enable-cg --enable-zlib"
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-zlib --enable-lakka"
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
 #if [ "$PROJECT" == "RPi" ]; then
@@ -52,12 +53,12 @@ TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-
 addon() {
   # Binaries
   mkdir -p $PKG_DIR/source/bin
-    cp $INSTALL/usr/bin/retroarch $PKG_DIR/source/bin
-    cp $INSTALL/usr/bin/retroarch-joyconfig $PKG_DIR/source/bin
+    cp $ROOT/$PKG_BUILD/retroarch $PKG_DIR/source/bin
+    cp $ROOT/$PKG_BUILD/tools/retroarch-joyconfig $PKG_DIR/source/bin
 
   # Configuration
   mkdir -p $PKG_DIR/source/config
-    cp $INSTALL/etc/retroarch.cfg $PKG_DIR/source/config
+    cp $ROOT/$PKG_BUILD/retroarch.cfg $PKG_DIR/source/config
 
   # Cores
   mkdir -p $PKG_DIR/source/cores
@@ -79,6 +80,10 @@ addon() {
 
 }
 
+pre_configure_target() {
+  cd $ROOT/$PKG_BUILD
+}
+
 makeinstall_target() {
   mkdir -p $INSTALL/usr/bin
   mkdir -p $INSTALL/etc
@@ -87,7 +92,7 @@ makeinstall_target() {
     cp $ROOT/$PKG_BUILD/retroarch.cfg $INSTALL/etc
   
   # General configuration
-  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.retroarch\/lib/"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.retroarch\/cores\/\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# content_directory =/content_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# savefile_directory =/savefile_directory =\/storage\/emulators\/retroarch\/savefiles/" $INSTALL/etc/retroarch.cfg

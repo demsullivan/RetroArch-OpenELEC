@@ -26,7 +26,6 @@ done
 echo "Cleaning $openelec_src_path..."
   cd $openelec_src_path
     git clean -df
-    rm -rf sources
     rm -rf tools/mkpkg/*.git
     rm -rf tools/mkpkg/*.xz
   cd $DIR
@@ -87,7 +86,8 @@ cp -R packages/emulator/* $openelec_src_path/packages/emulator
 mkdir -p $openelec_src_path/packages/emulator/RetroArch/icon
 cp icon/icon.png $openelec_src_path/packages/emulator/RetroArch/icon
 cp changelog.txt $openelec_src_path/packages/emulator/RetroArch
-cp -R sources/* $openelec_src_path/packages/emulator/RetroArch/sources
+mkdir -p $openelec_src_path/packages/emulator/RetroArch/source
+cp -R source/* $openelec_src_path/packages/emulator/RetroArch/source
 
 . $openelec_src_path/config/version
 
@@ -102,22 +102,24 @@ fi
 export LAKKA_MIRROR="http://sources.openelec.tv/$OPENELEC_VERSION"
 
 for i in $packages; do
-    echo "Building $i package..."
-    ./mkpkg_$i > /dev/null 2&>1
-    package_file=`ls -1 $i*.tar.xz`
 
     if [ ! -d $openelec_src_path/sources/$i/ ]; then
 	mkdir $openelec_src_path/sources/$i/
+
+	echo "Building $i package..."
+	./mkpkg_$i > /dev/null 2&>1
+	package_file=`ls -1 $i*.tar.xz`
+	
+	mv $package_file $openelec_src_path/sources/$i/
+
+	echo "Generating md5 and url files for $i..."
+          md5sum $openelec_src_path/sources/$i/$package_file > $openelec_src_path/sources/$i/$package_file.md5
+	  echo "$LAKKA_MIRROR/$package_file" > $openelec_src_path/sources/$i/$package_file.url
+
+
+	  echo "Setting PKG_VERSION in $i package.mk..."
+  	    sed -i -e "s/PKG_VERSION=\".*\"/PKG_VERSION=\"$package_ver\"/" $openelec_src_path/packages/emulator/$i/package.mk
     fi
-    mv $package_file $openelec_src_path/sources/$i/
-
-    echo "Generating md5 and url files for $i..."
-      md5sum $openelec_src_path/sources/$i/$package_file > $openelec_src_path/sources/$i/$package_file.md5
-      echo "$LAKKA_MIRROR/$package_file" > $openelec_src_path/sources/$i/$package_file.url
-
-    echo "Setting PKG_VERSION in $i package.mk..."
-      package_ver=`echo $package_file | cut -f 2 -d - | cut -f 1 -d .`
-      sed -i -e "s/PKG_VERSION=\".*\"/PKG_VERSION=\"$package_ver\"/" $openelec_src_path/packages/emulator/$i/package.mk
 done
 
 cd $openelec_src_path
