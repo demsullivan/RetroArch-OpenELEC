@@ -10,7 +10,7 @@
     <!-- Audio -->
     <category label="1300">
           <setting label="1310" type="action" action="RunScript($CWD/resources/lib/display_audio.py)"/>
-          <setting label="1330" type="labelnum" id="AUDIO_DRIVER" values="alsa|openal"/>
+          <setting label="1330" type="labelenum" id="AUDIO_DRIVER" values="alsa|openal"/>
           <setting label="1320" type="text" id="AUDIO_DEVICE"/>
     </category>
 
