@@ -30,7 +30,7 @@ __settings__ = xbmcaddon.Addon(id='emulator.retroarch')
 __cwd__ = __settings__.getAddonInfo('path')
 __path__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', 'retroarch'))
 __binpath__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', '*'))
-__config__	= xbmc.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
+__config__ = xbmc.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
 
 # Assign path variables for user files
 user_dirs = '/storage/emulators/retroarch'
@@ -45,16 +45,17 @@ subprocess.call(['chmod', 'a+rx', __binpath__])
 
 # Check if directories for user files exists and create if necessary
 if not os.path.isdir(user_dirs):
-	os.makedirs(os.path.join(user_dirs, 'config'))
-	os.makedirs(os.path.join(user_dirs, 'log'))
-	os.makedirs(os.path.join(user_dirs, 'roms'))
-	os.makedirs(os.path.join(user_dirs, 'savefiles'))
-	os.makedirs(os.path.join(user_dirs, 'savestates'))
-	os.makedirs(os.path.join(user_dirs, 'system'))
+    os.mkdir(user_dirs)
+    os.mkdir(os.path.join(user_dirs, 'config'))
+    os.mkdir(os.path.join(user_dirs, 'log'))
+    os.mkdir(os.path.join(user_dirs, 'roms'))
+    os.mkdir(os.path.join(user_dirs, 'savefiles'))
+    os.mkdir(os.path.join(user_dirs, 'savestates'))
+    os.mkdir(os.path.join(user_dirs, 'system'))
 
 # Check if user configuration file exists and create if necessary
 if not os.path.isfile(user_config):
-	shutil.copy(__config__, user_config)
+    shutil.copy(__config__, user_config)
 
 # Check the current value of MENU_DRIVER in settings.xml and change in 
 # user_config if different from it.
@@ -98,16 +99,16 @@ def settings_parser(settings_id, user_config_entry):
     # Assign RetroArch user_config to ConfigObj
     config = ConfigObj(user_config)
 	
-	# Get values from files
-	user_config_value = config[user_config_entry]
-	settings_value = xbmc.getSetting(settings_id)
+    # Get values from files
+    user_config_value = config[user_config_entry]
+    settings_value = xbmc.getSetting(settings_id)
 	
-	# Evaluate values
-	if settings_value != user_config_value:
+    # Evaluate values
+    if settings_value != user_config_value:
 	    
-	    # Write new value
-		config[user_config_entry] = settings_value
-		config.write()
+        # Write new value
+        config[user_config_entry] = settings_value
+        config.write()
 
 def add_flag(settings_id, value, flag):
     
@@ -115,7 +116,7 @@ def add_flag(settings_id, value, flag):
     if xbmc.getSetting(settings_id) = value:
         
         #Insert flag as second-to-last item in args
-	    args.append(flag)
+        args.append(flag)
 
 def launch_retroarch():
     
