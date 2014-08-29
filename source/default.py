@@ -20,17 +20,17 @@
 
 import os
 import shutil
-import subprocess
+from subprocess import call, check_output
 import xbmc
 import xbmcaddon
-from lib.configobj import ConfigObj
+from libs.configobj import ConfigObj
 
 # Assign path variables for add-on files
 __settings__ = xbmcaddon.Addon(id='emulator.retroarch')
 __cwd__ = __settings__.getAddonInfo('path')
-__path__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', 'retroarch'))
-__binpath__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', '*'))
-__config__ = xbmc.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
+__path__ = __settings__.translatePath(os.path.join(__cwd__, 'bin', 'retroarch'))
+__binpath__ = __settings__.translatePath(os.path.join(__cwd__, 'bin', '*'))
+__config__ = __settings__.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
 
 # Assign path variables for user files
 user_dirs = '/storage/emulators/retroarch'
@@ -41,7 +41,50 @@ user_log = os.path.join(user_dirs, 'log', 'retroarch.log')
 args = [__path__, '--menu', '--config', user_config]
 
 # Make all add-on binaries executable
-subprocess.call(['chmod', 'a+rx', __binpath__])
+call(['chmod', 'a+rx', __binpath__])
+
+
+def settings_parser(settings_id, user_config_entry):
+    
+    # Assign RetroArch user_config to ConfigObj
+    config = ConfigObj(user_config)
+	
+    # Get values from files
+    user_config_value = config[user_config_entry]
+    settings_value = __settings__.getSetting(settings_id)
+	
+    # Evaluate values
+    if settings_value != user_config_value:
+	    
+        # Write new value
+        config[user_config_entry] = settings_value
+        config.write()
+
+def add_flag(settings_id, value, flag):
+    
+    # Evaluate values
+    if xbmc.getSetting(settings_id) = value:
+        
+        #Insert flag as second-to-last item in args
+        args.append(flag)
+
+def launch_retroarch():
+    
+    # Launch RetroArch with selected flags
+    output = check_output(args)
+
+def stop_method():
+    if __settings__.getSetting(XBMC_SERVICE) = '0':
+        subprocess.call('pgrep xbmc.bin | xargs kill -SIGSTOP', shell=True)
+    if __settings__.getSetting(XBMC_SERVICE) = '1':
+        subprocess.call('systemctl stop xbmc', shell=True)
+
+def start_method():
+    if __settings__.getSetting(XBMC_SERVICE) = '0':
+        subprocess.call('pgrep xbmc.bin | xargs kill -SIGCONT', shell=True)
+    if __settings__.getSetting(XBMC_SERVICE) = '1':
+        subprocess.call('systemctl start xbmc', shell=True)
+
 
 # Check if directories for user files exists and create if necessary
 if not os.path.isdir(user_dirs):
@@ -79,7 +122,7 @@ stop_method()
 launch_retroarch()
 
 # Writes to user_log if debug is enabled in settings.xml
-if xbmc.getSetting(DEBUG) = 'true':
+if __settings__.getSetting(DEBUG) = 'true':
     
     # Open log file
     log = open(user_log, 'w')
@@ -92,45 +135,3 @@ if xbmc.getSetting(DEBUG) = 'true':
 
 # Start XBMC
 start_method()
-
-
-def settings_parser(settings_id, user_config_entry):
-    
-    # Assign RetroArch user_config to ConfigObj
-    config = ConfigObj(user_config)
-	
-    # Get values from files
-    user_config_value = config[user_config_entry]
-    settings_value = xbmc.getSetting(settings_id)
-	
-    # Evaluate values
-    if settings_value != user_config_value:
-	    
-        # Write new value
-        config[user_config_entry] = settings_value
-        config.write()
-
-def add_flag(settings_id, value, flag):
-    
-    # Evaluate values
-    if xbmc.getSetting(settings_id) = value:
-        
-        #Insert flag as second-to-last item in args
-        args.append(flag)
-
-def launch_retroarch():
-    
-    # Launch RetroArch with selected flags
-    output = check_output(args)
-
-def stop_method():
-    if xbmc.getSetting(XBMC_SERVICE) = '0':
-        subprocess.call('pgrep xbmc.bin | xargs kill -SIGSTOP', shell=True)
-    if xbmc.getSetting(XBMC_SERVICE) = '1':
-        subprocess.call('systemctl stop xbmc', shell=True)
-
-def start_method():
-    if xbmc.getSetting(XBMC_SERVICE) = '0':
-        subprocess.call('pgrep xbmc.bin | xargs kill -SIGCONT', shell=True)
-    if xbmc.getSetting(XBMC_SERVICE) = '1':
-        subprocess.call('systemctl start xbmc', shell=True)
