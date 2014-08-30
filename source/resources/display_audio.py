@@ -18,13 +18,11 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-import xbmcaddon
 import xbmcgui
-from subprocess import check_output
+import subprocess
  
-__addon__ = xbmcaddon.Addon()
-__addonname__ = __addon__.getAddonInfo('name')
- 
-output = check_output(['aplay', '-l'])
- 
-xbmcgui.Dialog().ok(__addonname__, output)
+output = subprocess.check_output(['aplay', '-l'])
+
+dialog = xbmcgui.Dialog() 
+dialog.ok('Audio cards and devices', output)
+
