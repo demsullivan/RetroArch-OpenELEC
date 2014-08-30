@@ -3,20 +3,21 @@
 
     <!-- General -->
     <category label="1000">
-        <setting label="1010" type="labelenum" id="MENU_DRIVER" values="lakka|rgui"/>
-        <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022"/>
+        <setting label="1010" type="labelenum" id="MENU_DRIVER" values="lakka|rgui" default="lakka"/>
+        <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022"/ default="0">
     </category>
     
     <!-- Audio -->
     <category label="1300">
-          <setting label="1310" type="action" action="RunScript($CWD/resources/lib/display_audio.py)"/>
-          <setting label="1330" type="labelenum" id="AUDIO_DRIVER" values="alsa|openal"/>
+          <setting label="1310" type="action" action="RunScript($CWD/resources/display_audio.py)"/>
+          <setting label="1330" type="labelenum" id="AUDIO_DRIVER" values="alsa|openal" default="alsa"/>
           <setting label="1320" type="text" id="AUDIO_DEVICE"/>
     </category>
 
     <!-- Debug -->
     <category label="1100">
         <setting label="1110" type="bool" id="DEBUG" default="false"/>
+        <setting label="1120" type="bool" id="VERBOSE" subsetting="true" default="false" enable="eq(-1,true)"/>
     </category>
 
 </settings>
