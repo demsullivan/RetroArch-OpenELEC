@@ -1,1 +1,1 @@
-CFG_CORES="nestopia"
+CFG_CORES=" beetle-gba beetle-ngp beetle-pce beetle-pcfx beetle-psx beetle-vb beetle-wswan bnes desmume dinothawr dosbox fba fceu-next gambatte genesis-plus-gx handy hatari imame4all libretro-ffmpeg mame meteor mupen64plus nestopia nxengine pcsx_rearmed picodrive pocketsnes ppsspp prboom quicknes scummvm snes9x-next stella vbam vba-next vecx yabause"

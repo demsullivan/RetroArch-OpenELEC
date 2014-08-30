@@ -34,7 +34,7 @@ echo "Cleaning $openelec_src_path..."
 valid_cores=""
 real_cores=""
 for i in `ls -1 packages/emulator`; do
-    if [[ "$i" != "RetroArch" && "$i" != "retroarch-joypad-autoconfig" && "$i" != "retroarch-assets" ]]; then
+    if [[ "$i" != "RetroArch" && "$i" != "retroarch-joypad-autoconfig" && "$i" != "retroarch-assets" && "$i" != "libcg" && "$i" != "common-shaders" && "$i" != "core-info" ]]; then
 	real_cores="$real_cores $i"
     fi
 done
@@ -77,6 +77,7 @@ echo "Project: $project"
 echo "Cores: $selected_cores"
 echo "OE Source: $openelec_src_path"
 
+[ "$selected_cores" = "all" ] && selected_cores="$real_cores"
 echo "CFG_CORES=\"$selected_cores\"" > packages/emulator/RetroArch/config
 
 # copy files to OpenELEC source
@@ -93,7 +94,7 @@ cp -R source/* $openelec_src_path/packages/emulator/RetroArch/source
 
 # make packages
 cd $openelec_src_path/tools/mkpkg
-packages="$selected_cores RetroArch retroarch-assets common-shaders core-info"
+packages="$selected_cores RetroArch retroarch-assets retroarch-joypad-autoconfig common-shaders core-info"
 
 if [ ! -d $openelec_src_path/sources/ ]; then
     mkdir $openelec_src_path/sources/
@@ -109,7 +110,7 @@ for i in $packages; do
 	echo "Building $i package..."
 	./mkpkg_$i > /dev/null 2&>1
 	package_file=`ls -1 $i*.tar.xz`
-	
+	package_ver=`echo $package_file | rev | cut -d - -f 1 | rev | cut -d . -f 1`
 	mv $package_file $openelec_src_path/sources/$i/
 
 	echo "Generating md5 and url files for $i..."
