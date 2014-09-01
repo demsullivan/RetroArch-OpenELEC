@@ -29,19 +29,25 @@ from libs.configobj import ConfigObj
 __addon__ = xbmcaddon.Addon(id='emulator.RetroArch')
 __cwd__ = __addon__.getAddonInfo('path')
 __path__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', 'retroarch'))
-__binpath__ = xbmc.translatePath(os.path.join(__cwd__, 'bin', '*'))
+__binpath__ = xbmc.translatePath(os.path.join(__cwd__, 'bin'))
 __config__ = xbmc.translatePath(os.path.join(__cwd__, 'config', 'retroarch.cfg'))
 
 # Assign path variables for user files
 user_dirs = '/storage/emulators/RetroArch'
 user_config = os.path.join(user_dirs, 'config', 'retroarch.cfg')
+user_log = os.path.join(user_dirs, 'log', 'retroarch.log')
+
+# Assign path variables for shell scripts
+helper_script = os.path.join(__cwd__, 'resources', 'helper.sh')
+display_audio_script = os.path.join(__cwd__, 'resources', 'display_audio.py')
 
 # List of default flags which are passed to the RetroArch binary
 args = [__path__, '--menu', '--config', user_config]
 
-# Make all add-on binaries executable
-subprocess.call(['chmod', 'a+rx', __binpath__])
-
+# Make all add-on binaries and shell scripts executable
+subprocess.call(['chmod', '-R', 'a+x', __binpath__])
+subprocess.call(['chmod', '-R', 'a+x', helper_script])
+subprocess.call(['chmod', '-R', 'a+x', display_audio_script])
 
 def settings_parser(settings_id, user_config_entry):
     # Assign RetroArch user_config to ConfigObj
@@ -62,39 +68,25 @@ def add_flag(settings_id, value, flag):
         args.append(flag)
 
 def launch_retroarch():
+    # Create string from args list
+    sep = ' '
+    string = sep.join(args)
+    print string
+    # Assign XBMC_SERVICE in settings.xml to variable
+    xbmc_service = __addon__.getSetting('XBMC_SERVICE')
     # Copy environment
     env = os.environ.copy()
     # Add libs folder to environment
-    env['LD_LIBRARY_PATH'] = '/storage/.xbmc/addons/emulator.RetroArch/libs'
-    # Define global variable
-    global output
+    env['LD_LIBRARY_PATH'] = os.path.join(__cwd__, 'libs')
     # Launch RetroArch with selected flags and environment
-    output = subprocess.check_output(args, stderr=subprocess.STDOUT, env=env)
-    
-def logger():
-    # If debugging is selected in settings.xml, log to xbmc.log
-    if __addon__.getSetting('DEBUG') or __addon__.getSetting('VERBOSE') == 'true':
-        xbmc.log(output)
-    else:
-        pass
-
-def stop_method():
-    if __addon__.getSetting(XBMC_SERVICE) == '0':
-        subprocess.call('pgrep xbmc.bin | xargs kill -SIGSTOP', shell=True)
-    if __addon__.getSetting(XBMC_SERVICE) == '1':
-        subprocess.call('systemctl stop xbmc', shell=True)
-
-def start_method():
-    if __addon__.getSetting(XBMC_SERVICE) == '0':
-        subprocess.call('pgrep xbmc.bin | xargs kill -SIGCONT', shell=True)
-    if __addon__.getSetting(XBMC_SERVICE) == '1':
-        subprocess.call('systemctl start xbmc', shell=True)
+    subprocess.Popen([helper_script, string, xbmc_service, output], env=env, preexec_fn=os.setpgrp)
 
 
 # Check if directories for user files exists and create if necessary
 if not os.path.isdir(user_dirs):
     os.makedirs(user_dirs)
     os.mkdir(os.path.join(user_dirs, 'config'))
+    os.mkdir(os.path.join(user_dirs, 'log'))
     os.mkdir(os.path.join(user_dirs, 'roms'))
     os.mkdir(os.path.join(user_dirs, 'savefiles'))
     os.mkdir(os.path.join(user_dirs, 'savestates'))
@@ -119,20 +111,11 @@ settings_parser('AUDIO_DEVICE', 'audio_device')
 # Add --verbose flag to args if selected in settings.xml
 add_flag('VERBOSE', 'true', '--verbose')
 
-# Create xbmc.log entry that add-on is started
-xbmc.log("OpenELEC RetroArch add-on started")
-
-# Stop XBMC
-#stop_method()
+# Evaluate DEBUG in settings.xml and assign log path
+if __addon__.getSetting('DEBUG') == 'true':
+    output = user_log
+elif __addon__.getSetting('DEBUG') == 'false':
+    output = '/dev/null'
 
 # Launch RetroArch
 launch_retroarch()
-
-# Logging
-logger()
-
-# Create xbmc.log entry that add-on is stopped
-xbmc.log("OpenELEC RetroArch add-on stopped")
-
-# Start XBMC
-#start_method()
