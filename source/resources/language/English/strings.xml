@@ -9,7 +9,7 @@
 	<string id="1022">Stop</string>
 	<string id="1100">Debug</string>
 	<string id="1110">Enable debugging</string>
-	<string id="1120">Enable verbose debugging</string>
+	<string id="1120">Enable verbose</string>
 	<string id="1300">Audio</string>
 	<string id="1310">Display available audio cards and devices</string>
 	<string id="1320">Audio device</string>

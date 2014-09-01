@@ -4,7 +4,7 @@
     <!-- General -->
     <category label="1000">
         <setting label="1010" type="labelenum" id="MENU_DRIVER" values="lakka|rgui" default="lakka"/>
-        <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022"/ default="0">
+        <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022" default="0"/>
     </category>
     
     <!-- Audio -->
