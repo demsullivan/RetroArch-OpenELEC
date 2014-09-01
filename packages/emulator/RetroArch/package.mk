@@ -25,7 +25,7 @@ PKG_ARCH="any"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/libretro/RetroArch"
 PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders core-info Mesa"
+PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders core-info libcg Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
 PKG_SHORTDESC="Reference frontend for the libretro API."
@@ -40,8 +40,8 @@ PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
 PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET $CFG_CORES"
-#TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-oa --enable-cg --enable-zlib"
-TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-zlib --enable-lakka"
+TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-oa --enable-cg --enable-zlib"
+#TARGET_CONFIGURE_OPTS="--host=$TARGET_NAME --prefix=/usr --disable-vg --disable-ffmpeg --disable-sdl --enable-alsa --enable-zlib --enable-lakka"
 
 # remove the RPi and Cubieboard stuff? I'm not sure if it's needed for OpenELEC.
 #if [ "$PROJECT" == "RPi" ]; then
@@ -61,22 +61,29 @@ addon() {
     cp $ROOT/$PKG_BUILD/retroarch.cfg $PKG_DIR/source/config
 
   # Cores
+  for i in $CFG_CORES; do
+    scripts/install $i
+  done
+  scripts/install core-info
   mkdir -p $PKG_DIR/source/cores
     cp $INSTALL/usr/lib/libretro/*.so $PKG_DIR/source/cores
     cp $INSTALL/usr/lib/libretro/*.info $PKG_DIR/source/cores
 
   # Libraries
+  scripts/install openal-soft
   mkdir -p $PKG_DIR/source/libs
     cp $INSTALL/usr/lib/libopenal.so.1 $PKG_DIR/source/libs
     # TODO: libCg
 
   # Shaders
+  scripts/install common-shaders
   mkdir -p $PKG_DIR/source/shaders
     cp -R $INSTALL/usr/share/retroarch/shaders/* $PKG_DIR/source/shaders
 
   # Assets
+  scripts/install retroarch-assets
   mkdir -p $PKG_DIR/source/assets
-    cp $INSTALL/usr/share/retroarch/* $PKG_DIR/source/assets
+    cp -R $INSTALL/usr/share/retroarch/* $PKG_DIR/source/assets
 
 }
 
