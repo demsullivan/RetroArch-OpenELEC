@@ -3,14 +3,14 @@
 
     <!-- General -->
     <category label="1000">
-        <setting label="1010" type="labelenum" id="MENU_DRIVER" values="lakka|rgui" default="lakka"/>
+        <setting label="1010" type="labelenum" id="MENU_DRIVER" values="Lakka|RGUI" default="Lakka"/>
         <setting label="1020" type="enum" id="XBMC_SERVICE" lvalues="1021|1022" default="0"/>
     </category>
     
     <!-- Audio -->
     <category label="1300">
           <setting label="1310" type="action" action="RunScript($CWD/resources/display_audio.py)"/>
-          <setting label="1330" type="labelenum" id="AUDIO_DRIVER" values="alsa|openal" default="alsa"/>
+          <setting label="1330" type="labelenum" id="AUDIO_DRIVER" values="ALSA|OpenAL" default="ALSA"/>
           <setting label="1320" type="text" id="AUDIO_DEVICE"/>
     </category>
 
