@@ -99,17 +99,18 @@ makeinstall_target() {
     cp $ROOT/$PKG_BUILD/retroarch.cfg $INSTALL/etc
   
   # General configuration
-  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.retroarch\/cores\/\"/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# content_directory =/content_directory =\/storage\/emulators\/retroarch\/roms/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# savefile_directory =/savefile_directory =\/storage\/emulators\/retroarch\/savefiles/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# savestate_directory =/savestate_directory =\/storage\/emulators\/retroarch\/savestates/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# system_directory =/system_directory =\/storage\/emulators\/retroarch\/system/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# screenshot_directory =/screenshot_directory =\/storage\/screenshots/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# video_shader_dir =/video_shader_dir =\/storage\/.xbmc\/addons\/emulator.retroarch\/shaders/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/cores\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory = \"\/storage\/emulators\/retroarch\/roms\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# content_directory =/content_directory = \"\/storage\/emulators\/RetroArch\/roms\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# savefile_directory =/savefile_directory = \"\/storage\/emulators\/RetroArch\/savefiles\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# savestate_directory =/savestate_directory = \"\/storage\/emulators\/RetroArch\/savestates\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# system_directory =/system_directory = \"\/storage\/emulators\/RetroArch\/system\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# screenshot_directory =/screenshot_directory = \"\/storage\/screenshots\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# video_shader_dir =/video_shader_dir = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/shaders\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# rgui_show_start_screen = true/rgui_show_start_screen = false/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# assets_directory =/assets_directory =\/storage\/.xbmc\/addons\/emulator.retroarch\/assets/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# assets_directory =/assets_directory = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/assets\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# menu_driver = \"rgui\"/menu_driver = \"lakka\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# game_history_path =/game_history_path = \"\/storage\/emulators\/RetroArch\/system\"/" $INSTALL/etc/retroarch.cfg
   
   # Video
   sed -i -e "s/# video_fullscreen = false/video_fullscreen = true/" $INSTALL/etc/retroarch.cfg
@@ -119,11 +120,14 @@ makeinstall_target() {
   #sed -i -e "s/# video_threaded = false/video_threaded = true/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# video_font_path =/video_font_path =\/usr\/share\/fonts\/liberation\/LiberationSans-Regular.ttf/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# video_font_size = 48/video_font_size = 32/" $INSTALL/etc/retroarch.cfg
-  
+
+  # Audio
+  sed -i -e "s/# audio_driver =/audio_driver = alsa/" $INSTALL/etc/retroarch.cfg
+
   # Input
   sed -i -e "s/# input_driver = sdl/input_driver = udev/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# input_autodetect_enable = true/input_autodetect_enable = true/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# joypad_autoconfig_dir =/joypad_autoconfig_dir = \/storage\/.xbmc\/addons\/emulator.retroarch\/bin\/retroarch-joypad-autoconfig/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# joypad_autoconfig_dir = \"\/storage\/emulators\/RetroArch\/config\"/" $INSTALL/etc/retroarch.cfg
   
   # Misc
   sed -i -e "s/# video_gpu_screenshot = true/video_gpu_screenshot = false/" $INSTALL/etc/retroarch.cfg
