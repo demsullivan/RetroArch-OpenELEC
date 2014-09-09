@@ -28,6 +28,7 @@ PKG_URL="$LAKKA_MIRROR/$PKG_NAME-$PKG_VERSION.tar.xz"
 PKG_DEPENDS_TARGET="toolchain openal-soft freetype retroarch-assets common-shaders core-info libcg Mesa"
 PKG_PRIORITY="optional"
 PKG_SECTION="RetroArch"
+PKG_CUSTOM_ADDON_VERSION="1.0.0~alpha1"
 PKG_SHORTDESC="Reference frontend for the libretro API."
 PKG_LONGDESC="RetroArch is the reference frontend for the libretro API. Popular examples of implementations for this API includes videogame system emulators and game engines, but also more generalized 3D programs. These programs are instantiated as dynamic libraries. We refer to these as libretro cores."
 
@@ -35,7 +36,7 @@ PKG_IS_ADDON="yes"
 PKG_ADDON_REQUIRES="os.openelec.tv:4.0.7 xbmc.python:2.0"
 PKG_MAINTAINER="dave@dave-sullivan.com"
 PKG_ADDON_TYPE="xbmc.python.script"
-PKG_ADDON_ID="emulator.retroarch"
+PKG_ADDON_ID="emulator.RetroArch"
 PKG_AUTORECONF="no"
 
 . $PKG_DIR/config
