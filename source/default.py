@@ -39,7 +39,7 @@ def settings_parser(settings_id, user_config_entry):
          user_config_value = config[user_config_entry]
          settings_value = __addon__.getSetting(settings_id).lower()
     else:
-         xbmc.log("Oops! Could not find entry %s = %s in %s. Maybe it is commented out?" % (user_config_entry, settings_value, user_config))
+         xbmc.log("Oops! Could not find entry %s = \"%s\" in %s. Maybe it is commented out?" % (user_config_entry, settings_value, user_config))
          exit()
     
     # Write new value in config
@@ -81,9 +81,6 @@ subprocess.call(['chmod', '-R', 'a+x', __binpath__])
 subprocess.call(['chmod', 'a+x', helper_script])
 subprocess.call(['chmod', 'a+x', display_audio_script])
 
-# Assign value of XBMC_SERVICE in settings.xml to variable
-service = __addon__.getSetting('XBMC_SERVICE')
-
 # Check if directories for user files exists and create if necessary
 if not os.path.isdir(user_dir):
     os.makedirs(user_dir)
@@ -99,7 +96,7 @@ if not os.path.isfile(user_config):
     shutil.copy(__config__, user_config)
 
 # Print entry to xbmc.log
-xbmc.log("Starting the OpenELEC RetroArch add-on.")
+xbmc.log("Starting the OpenELEC RetroArch add-on...")
 
 # Check the current value of MENU_DRIVER in settings.xml and change in 
 # user_config if different from it.
@@ -116,26 +113,29 @@ settings_parser('AUDIO_DEVICE', 'audio_device')
 # Add --verbose flag to args if selected in settings.xml
 add_flag('VERBOSE', 'true', '--verbose')
 
+# Assign value of XBMC_SERVICE in settings.xml to variable
+service = __addon__.getSetting('XBMC_SERVICE')
+
+# Create string from args list
+sep = ' '
+string = sep.join(args)
+
 # Evaluate DEBUG in settings.xml and assign log path
 if __addon__.getSetting('DEBUG') == 'true':
     output = user_log
 elif __addon__.getSetting('DEBUG') == 'false':
     output = '/dev/null'
 
+# Copy environment
+env = os.environ.copy()
+# Add libs folder to environment
+env['LD_LIBRARY_PATH'] = os.path.join(__cwd__, 'libs')
+
 # Suspend XBMC's audio stream 
 try:
     xbmc.audioSuspend()
 except:
     pass
-
-# Create string from args list
-sep = ' '
-string = sep.join(args)
-
-# Copy environment
-env = os.environ.copy()
-# Add libs folder to environment
-env['LD_LIBRARY_PATH'] = os.path.join(__cwd__, 'libs')
 
 # Launch RetroArch with selected flags and environment
 p = subprocess.Popen([helper_script, service, string, output], env=env, preexec_fn=os.setpgrp)
