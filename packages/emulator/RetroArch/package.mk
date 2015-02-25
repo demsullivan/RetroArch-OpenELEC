@@ -100,16 +100,16 @@ makeinstall_target() {
     cp $ROOT/$PKG_BUILD/retroarch.cfg $INSTALL/etc
   
   # General configuration
-  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/cores\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# libretro_path = \"\/path\/to\/libretro.so\"/libretro_path = \"\/storage\/.kodi\/addons\/emulator.RetroArch\/cores\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# rgui_browser_directory =/rgui_browser_directory = \"\/storage\/emulators\/retroarch\/roms\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# content_directory =/content_directory = \"\/storage\/emulators\/RetroArch\/roms\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# savefile_directory =/savefile_directory = \"\/storage\/emulators\/RetroArch\/savefiles\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# savestate_directory =/savestate_directory = \"\/storage\/emulators\/RetroArch\/savestates\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# system_directory =/system_directory = \"\/storage\/emulators\/RetroArch\/system\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# screenshot_directory =/screenshot_directory = \"\/storage\/screenshots\"/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# video_shader_dir =/video_shader_dir = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/shaders\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# video_shader_dir =/video_shader_dir = \"\/storage\/.kodi\/addons\/emulator.RetroArch\/shaders\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# rgui_show_start_screen = true/rgui_show_start_screen = false/" $INSTALL/etc/retroarch.cfg
-  sed -i -e "s/# assets_directory =/assets_directory = \"\/storage\/.xbmc\/addons\/emulator.RetroArch\/assets\"/" $INSTALL/etc/retroarch.cfg
+  sed -i -e "s/# assets_directory =/assets_directory = \"\/storage\/.kodi\/addons\/emulator.RetroArch\/assets\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# menu_driver = \"rgui\"/menu_driver = \"lakka\"/" $INSTALL/etc/retroarch.cfg
   sed -i -e "s/# game_history_path =/game_history_path = \"\/storage\/emulators\/RetroArch\/system\"/" $INSTALL/etc/retroarch.cfg
   
